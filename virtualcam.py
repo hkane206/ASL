@@ -101,7 +101,7 @@ with pyvirtualcam.Camera(width=width, height=height, fps=fps) as cam:
                     time_hand_detected = time.time()  # Record the time the hand was detected
                                 
                 elapsed_time = time.time() - time_hand_detected
-                if elapsed_time >= 1.0:
+                if elapsed_time >= 2.0:
                     # Save the snapshot
                     cv2.imwrite(f'hand_snapshot{i}.png', image)
                     time_hand_detected = None  # Reset the timer after taking the snapshot
