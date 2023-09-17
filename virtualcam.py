@@ -52,8 +52,8 @@ def make_prediction(snap):
         image = cv2.flip(cv2.imread(snap), 1)
         results = hands.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
         
-        if results.multi_hand_landmarks is None:
-            return "No hand detected"
+        # if results.multi_hand_landmarks is None:
+        #     return "No hand detected"
         
         snap_json = save_landmarks(results.multi_hand_landmarks)  # Assuming save_landmarks returns a JSON string
         landmarks_data = json.loads(snap_json)  # Convert JSON string back to Python object
@@ -119,14 +119,24 @@ with pyvirtualcam.Camera(width=width, height=height, fps=fps) as cam:
                         mp_drawing_styles.get_default_hand_connections_style()
                     )
             else:
-                print("No hand detected")
                 time_hand_detected = None  # Reset the timer if no hand is detected
             
-            # Add text to the frame
-            text_frame = cv2.putText(image, pred, (540, 1000), cv2.FONT_HERSHEY_SIMPLEX , 4, (0,0,0), 2, cv2.LINE_AA)
-            
+            # Calculate text size and position to display it at the center bottom
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_size = 6
+            font_thickness = 16
+            text_size = cv2.getTextSize(pred, font, font_size, font_thickness)[0]
+            text_x = (width - text_size[0]) // 2
+            text_y = height - 50  # 50 pixels from the bottom
+
+            # Add white highlights (by drawing the text with a thicker white line)
+            cv2.putText(image, pred, (text_x, text_y), font, font_size, (255,255,255), font_thickness+4, cv2.LINE_AA)
+
+            # Add text (black font)
+            cv2.putText(image, pred, (text_x, text_y), font, font_size, (0,0,0), font_thickness, cv2.LINE_AA)
+
             # Flip frame 
-            text_frame = cv2.flip(text_frame, 1)
+            text_frame = cv2.flip(image, 1)
 
             resized_frame = cv2.resize(text_frame, (cam.width, cam.height))
             flipped_frame = cv2.flip(resized_frame, 1)
