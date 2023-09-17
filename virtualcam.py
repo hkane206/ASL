@@ -37,13 +37,17 @@ loaded_model = tf.keras.models.load_model('multi_layer_perceptron.h5')
 
 def save_landmarks(landmarks):
     landmarks_data = []
-    for hand_landmarks in landmarks:
-        hand_data = []
-        for point in hand_landmarks.landmark:
-            hand_data.append({"x": point.x, "y": point.y, "z": point.z})
-        landmarks_data.append(hand_data)
+    
+    if landmarks != None:
+        for hand_landmarks in landmarks:
+            hand_data = []
+            for point in hand_landmarks.landmark:
+                hand_data.append({"x": point.x, "y": point.y, "z": point.z})
+            landmarks_data.append(hand_data)
 
-    return json.dumps(landmarks_data)
+        return json.dumps(landmarks_data)
+    
+    return
 
 def make_prediction(snap):
     
@@ -56,6 +60,10 @@ def make_prediction(snap):
         #     return "No hand detected"
         
         snap_json = save_landmarks(results.multi_hand_landmarks)  # Assuming save_landmarks returns a JSON string
+
+        if snap_json is None:
+            return
+
         landmarks_data = json.loads(snap_json)  # Convert JSON string back to Python object
 
         # Convert landmarks_data into a flat feature vector suitable for the model
@@ -108,6 +116,10 @@ with pyvirtualcam.Camera(width=width, height=height, fps=fps) as cam:
                     # Remove the break statement if you want to continue capturing
 
                     pred = make_prediction(f'hand_snapshot{i}.png')
+
+                    if pred is None:
+                        continue
+
                     print(pred)
 
                     i += 1
