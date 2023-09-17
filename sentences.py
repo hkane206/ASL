@@ -19,4 +19,5 @@ def fix_text(text):
     print(edited_text)
 
 if __name__ == '__main__':
+    # test
     fix_text('hi Hack MIT! Tis is Gesture, an ASL trnzlation ap. We aree sO exsited to b here!')
