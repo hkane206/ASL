@@ -3,7 +3,6 @@ from transformers import AutoTokenizer, T5ForConditionalGeneration
 from transformers import pipeline
 from spellchecker import SpellChecker
 
-
 def fix_text(text):
     spell = SpellChecker()
     corrected_word = spell.correction(text)
