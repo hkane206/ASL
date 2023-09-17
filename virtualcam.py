@@ -30,6 +30,7 @@ mp_hands = mp.solutions.hands
 start_time = time.time()
 hand_detected = False
 time_hand_detected = None
+pred = ""
 
 #Load Model
 loaded_model = tf.keras.models.load_model('multi_layer_perceptron.h5')
@@ -100,7 +101,7 @@ with pyvirtualcam.Camera(width=width, height=height, fps=fps) as cam:
                     time_hand_detected = time.time()  # Record the time the hand was detected
                                 
                 elapsed_time = time.time() - time_hand_detected
-                if elapsed_time >= 0.5:
+                if elapsed_time >= 1.0:
                     # Save the snapshot
                     cv2.imwrite(f'hand_snapshot{i}.png', image)
                     time_hand_detected = None  # Reset the timer after taking the snapshot
@@ -122,7 +123,7 @@ with pyvirtualcam.Camera(width=width, height=height, fps=fps) as cam:
                 time_hand_detected = None  # Reset the timer if no hand is detected
             
             # Add text to the frame
-            text_frame = cv2.putText(image, 'Hello, World!', (540, 1000), cv2.FONT_HERSHEY_SIMPLEX , 4, (0,0,0), 2, cv2.LINE_AA)
+            text_frame = cv2.putText(image, pred, (540, 1000), cv2.FONT_HERSHEY_SIMPLEX , 4, (0,0,0), 2, cv2.LINE_AA)
             
             # Flip frame 
             text_frame = cv2.flip(text_frame, 1)
